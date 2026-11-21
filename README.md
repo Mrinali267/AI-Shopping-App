@@ -71,14 +71,14 @@ The API reads its environment from the repository root `.env` file. The frontend
 
 Keep credentials in local environment files or the hosting provider's secret store. Do not commit `.env` or `frontend/.env.local`.
 
-## Deploy the frontend to Vercel
+## Deploy with Vercel and Supabase
 
-See [DEPLOYMENT.md](DEPLOYMENT.md) for the Vercel settings and the separate API/database requirements. Vercel hosts the Next.js frontend; the FastAPI API needs a persistent container host and database.
+Vercel can host both the Next.js frontend and the FastAPI API as separate projects. Use Supabase for durable PostgreSQL storage. See [DEPLOYMENT.md](DEPLOYMENT.md) for project roots, environment variables, and database initialization steps.
 
 ## Current shape and limitations
 
 - The API is a separate FastAPI service; the frontend calls it using `NEXT_PUBLIC_API_URL`.
-- Local development uses SQLite. A persistent managed database is needed for a hosted API.
+- Local development uses SQLite. Hosted deployments need a managed PostgreSQL database such as Supabase.
 - Checkout and OAuth depend on external credentials and callback/CORS settings.
 - AI responses depend on the configured model provider and network access.
 - Campaign conversion and revenue figures are simulated demo metrics.
