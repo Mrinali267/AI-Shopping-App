@@ -1,0 +1,30 @@
+# Env
+.env
+.env.local
+!.env.example
+
+# Python
+venv/
+__pycache__/
+*.pyc
+backend/*.db
+backend/*.db-journal
+.pytest_cache/
+
+# Node / Next.js
+frontend/node_modules/
+frontend/.next/
+frontend/out/
+frontend/next-env.d.ts
+
+# Logs
+*.log
+
+# Local-only failure/debug notes — not part of the project's committed history
+
+# Editors / OS
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+VIDEO-SCRIPT.md 

@@ -1,0 +1,81 @@
+# One command to run the whole project:  docker compose up --build
+#
+# Copy .env.example to .env first and fill in your own credentials — no keys
+# are baked into these images. See README.md and DEPLOYMENT.md for configuration.
+
+name: ai-shopping-app
+
+services:
+  backend:
+    image: ai-shopping-app-backend
+    build:
+      context: ./backend
+    env_file:
+      # Optional: a fresh clone has no .env (it's gitignored), and every
+      # setting in app/core/config.py has a working default, so the stack
+      # still comes up. Copy .env.example to .env to enable Google sign-in,
+      # the payment gateway and the LLM.
+      - path: .env
+        required: false
+    environment:
+      # Overrides whatever DATABASE_URL is in .env: inside the container the
+      # SQLite file must live on the mounted volume, not in the image layer.
+      DATABASE_URL: sqlite:////app/appdata/ai_shopping_app.db
+      # The browser reaches the frontend on the host, so CORS and every
+      # post-login redirect must name the host origin, not a container name.
+      FRONTEND_URL: ${FRONTEND_URL:-http://127.0.0.1:3000}
+    ports:
+      - "8842:8842"
+    volumes:
+      - backend_db:/app/appdata
+    healthcheck:
+      test: ["CMD", "curl", "-fsS", "http://127.0.0.1:8842/health"]
+      interval: 5s
+      timeout: 3s
+      retries: 12
+      start_period: 20s
+    restart: unless-stopped
+
+  frontend:
+    image: ai-shopping-app-frontend
+    build:
+      context: ./frontend
+      args:
+        # Baked into the client bundle at build time — this is the origin the
+        # reviewer's browser calls, i.e. the published backend port above.
+        NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL:-http://127.0.0.1:8842}
+    ports:
+      - "3000:3000"
+    depends_on:
+      backend:
+        condition: service_healthy
+    restart: unless-stopped
+
+  # Not used by default — the app runs on SQLite, which needs no server and
+  # keeps a fresh clone to a single command. Start it only if you point
+  # DATABASE_URL at Postgres:  docker compose --profile postgres up --build
+  postgres:
+    image: postgres:16-alpine
+    profiles: ["postgres"]
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: commerce_app
+      POSTGRES_PASSWORD: local_dev_only
+      POSTGRES_DB: ai_shopping_app
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U commerce_app -d ai_shopping_app"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  backend_db:
+    # Reuse the existing local database volume so renaming the project does
+    # not discard seeded or user-created data.
+    name: ai-shopping-app_backend_db
+    external: true
+  postgres_data:

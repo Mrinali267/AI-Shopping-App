@@ -1,0 +1,129 @@
+@import "tailwindcss";
+
+/* ============================================================
+   Design tokens — Layer 5a visual pass.
+
+   Palette grounded in the product's own identity: a policy-gated,
+   commerce platform. `--color-accent` is the primary blue used by
+   Tailwind's default blue-600 — used sparingly for primary actions
+   and active state, never as decoration. Neutrals are cool, not warm
+   cream, and text is near-black rather than pure #000.
+
+   Numbers are set in Geist Mono everywhere (see .tabular-nums below
+   and app/layout.tsx) — not a display flourish, but a real answer to
+   "prices must align on the decimal": a monospace figure guarantees
+   that by construction, and it gives every audited number in this
+   product a consistent "ledger" character that's true to what the
+   app actually does (every price, every decision, is logged).
+   ============================================================ */
+
+:root {
+  --color-ink: #151116;
+  --color-ink-soft: #615861;
+  --color-ink-faint: #91858e;
+
+  --color-paper: #ffffff;
+  --color-surface: #ffffff;
+
+  --color-line: #eee7eb;
+  --color-line-strong: #d8cbd2;
+
+  --color-accent: #d9437a;
+  --color-accent-hover: #b52c62;
+  --color-accent-soft: #fff0f5;
+
+  --color-success: #206a43;
+  --color-success-soft: #e9f5ee;
+  --color-danger: #a3311c;
+  --color-danger-soft: #fbece9;
+  --color-warning: #8a5211;
+  --color-warning-soft: #faf1e1;
+
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 18px;
+
+  --shadow-elevated: 0 18px 42px -24px rgb(27 15 22 / 0.35), 0 2px 8px rgb(27 15 22 / 0.05);
+}
+
+@theme inline {
+  --color-ink: var(--color-ink);
+  --color-ink-soft: var(--color-ink-soft);
+  --color-ink-faint: var(--color-ink-faint);
+  --color-paper: var(--color-paper);
+  --color-surface: var(--color-surface);
+  --color-line: var(--color-line);
+  --color-line-strong: var(--color-line-strong);
+  --color-accent: var(--color-accent);
+  --color-accent-hover: var(--color-accent-hover);
+  --color-accent-soft: var(--color-accent-soft);
+  --color-success: var(--color-success);
+  --color-success-soft: var(--color-success-soft);
+  --color-danger: var(--color-danger);
+  --color-danger-soft: var(--color-danger-soft);
+  --color-warning: var(--color-warning);
+  --color-warning-soft: var(--color-warning-soft);
+
+  --radius-sm: var(--radius-sm);
+  --radius-md: var(--radius-md);
+  --radius-lg: var(--radius-lg);
+
+  --shadow-elevated: var(--shadow-elevated);
+
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+}
+
+* {
+  border-color: var(--color-line);
+}
+
+html {
+  color-scheme: light;
+}
+
+body {
+  background: var(--color-paper);
+  color: var(--color-ink);
+  font-feature-settings: "cv11", "ss01";
+  min-height: 100vh;
+}
+
+h1, h2, h3 {
+  text-wrap: balance;
+}
+
+button, a, input, textarea, select {
+  -webkit-tap-highlight-color: transparent;
+}
+
+button, a {
+  transition-timing-function: cubic-bezier(0.2, 0.75, 0.25, 1);
+}
+
+.editorial-heading {
+  font-family: "Iowan Old Style", "Baskerville", "Palatino Linotype", Georgia, serif;
+  letter-spacing: -0.035em;
+  font-weight: 500;
+}
+
+/* Tabular numerals for every figure — prices, counts, percentages,
+   timestamps. Apply alongside font-mono (.font-mono) so currency
+   columns align on the decimal, per the brief's own priority call. */
+.tabular-nums {
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: "tnum";
+}
+
+/* One visible focus treatment, used everywhere — see .focus-ring in
+   components. Never rely on the browser default outline alone, but
+   never remove it without replacing it either. */
+:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 3px;
+}
+
+::selection {
+  background: var(--color-accent-soft);
+  color: var(--color-ink);
+}
